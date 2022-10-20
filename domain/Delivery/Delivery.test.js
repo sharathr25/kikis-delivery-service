@@ -27,28 +27,14 @@ describe('Delivery', () => {
   })
 
   describe('Get delivery cost', () => {
-    test('With default amounts for 1KG and 1KM', () => {
-      const delivery = new Delivery({
-        baseDeliveryCost: 100,
-        couponService
-      })
-      const expectedDeliveryCost = 250
-
-      const actualDeliveryCost = delivery.getDeliveryCost({
-        packageTotalWeight: 10,
-        distanceToDestination: 10
-      })
-
-      expect(actualDeliveryCost).toBe(expectedDeliveryCost)
-    })
-    test('With custom amounts for 1KG and 1KM', () => {
+    test('get delivery cost', () => {
       const delivery = new Delivery({
         baseDeliveryCost: 100,
         couponService,
-        amountFor1Kg: 1,
-        amountFor1Km: 1
+        amountFor1Km: 5,
+        amountFor1Kg: 10
       })
-      const expectedDeliveryCost = 120
+      const expectedDeliveryCost = 250
 
       const actualDeliveryCost = delivery.getDeliveryCost({
         packageTotalWeight: 10,
@@ -62,7 +48,9 @@ describe('Delivery', () => {
     test('Get delivery cost for in-valid coupon', () => {
       const delivery = new Delivery({
         baseDeliveryCost: 100,
-        couponService
+        couponService,
+        amountFor1Km: 5,
+        amountFor1Kg: 10
       })
       const expectedDeliveryCost = 250
       const expectedDiscountAmount = 0
@@ -85,7 +73,9 @@ describe('Delivery', () => {
     test('Get delivery cost when distance not in range for the coupon code', () => {
       const delivery = new Delivery({
         baseDeliveryCost: 100,
-        couponService
+        couponService,
+        amountFor1Km: 5,
+        amountFor1Kg: 10
       })
       const expectedDeliveryCost = 1205
       const expectedDiscountAmount = 0

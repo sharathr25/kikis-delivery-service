@@ -10,9 +10,6 @@ const DistanceOfferCriteria = require('../../entities/OfferCriteria/OfferRangeCr
 const WeightOfferCriteria = require('../../entities/OfferCriteria/OfferRangeCriteria/WeightOfferCriteria/WeightOfferCriteria')
 const PercentageCoupon = require('../../entities/Coupon/PercentageCoupon/PercentageCoupon')
 
-const DEFAULT_AMOUNT_FOR_1_KM = 5
-const DEFAULT_AMOUNT_FOR_1_KG = 10
-
 class Delivery {
   #baseDeliveryCost
   #couponService
@@ -29,8 +26,8 @@ class Delivery {
   constructor ({
     baseDeliveryCost,
     couponService,
-    amountFor1Km = DEFAULT_AMOUNT_FOR_1_KM,
-    amountFor1Kg = DEFAULT_AMOUNT_FOR_1_KG
+    amountFor1Km,
+    amountFor1Kg
   }) {
     this.#baseDeliveryCost = baseDeliveryCost
     this.#couponService = couponService
