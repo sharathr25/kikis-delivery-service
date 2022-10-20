@@ -8,6 +8,5 @@ describe('WeightOfferCriteria', () => {
     })
     expect(lowerBound).toBe(1)
     expect(upperBound).toBe(10)
-    expect(unit).toBe('KG')
   })
 })

@@ -1,7 +1,6 @@
 const OfferRangeCriteria = require('../OfferRangeCriteria')
 
 class WeightOfferCriteria extends OfferRangeCriteria {
-  #unit
   /**
    *
    * @param {Object} bounds
@@ -10,15 +9,6 @@ class WeightOfferCriteria extends OfferRangeCriteria {
    */
   constructor (bounds) {
     super(bounds)
-    this.#unit = 'KG'
-  }
-
-  /**
-   * Getter for unit
-   * @returns {string}
-   */
-  get unit () {
-    return this.#unit
   }
 }
 
