@@ -1,4 +1,4 @@
-const CouponsService = require('../../repos/CouponsRepo/CouponsRepo')
+const CouponsRepo = require('../../repos/CouponsRepo/CouponsRepo')
 const {
   DISTANCE_NOT_IN_RANGE,
   INVALID_COUPON,
@@ -13,27 +13,36 @@ const DeliveryPackage = require('../../entities/DeliveryPackage/DeliveryPackage'
 
 class Delivery {
   #baseDeliveryCost
-  #couponService
+  #couponsRepo
   #amountFor1Km
   #amountFor1Kg
+  #noOfVehicles
+  #maxSpeed
+  #maxCarriableWeight
 
   /**
    *
    * @param {number} baseDeliveryCost
-   * @param {CouponsService} couponService
+   * @param {CouponsRepo} couponsRepo
    * @param {number} [amountFor1Km = DEFAULT_AMOUNT_FOR_1_KM]
    * @param {number} [amountFor1Kg = DEFAULT_AMOUNT_FOR_1_KG]
    */
   constructor ({
     baseDeliveryCost,
-    couponService,
+    couponsRepo,
     amountFor1Km,
-    amountFor1Kg
+    amountFor1Kg,
+    noOfVehicles,
+    maxSpeed,
+    maxCarriableWeight
   }) {
     this.#baseDeliveryCost = baseDeliveryCost
-    this.#couponService = couponService
+    this.#couponsRepo = couponsRepo
     this.#amountFor1Km = amountFor1Km
     this.#amountFor1Kg = amountFor1Kg
+    this.#noOfVehicles = 0
+    this.#maxSpeed = 0
+    this.#maxCarriableWeight = 0
   }
 
   /**
@@ -75,9 +84,9 @@ class Delivery {
    * @param {DeliveryPackage} deliveryPackage0
    * @returns
    */
-  getDeliveryCostWithCoupon (deliveryPackage0) {
+  getDeliveryPackageWithDeliveryCost (deliveryPackage0) {
     const deliveryPackage = DeliveryPackage.clone(deliveryPackage0)
-    const { weightInKG, distanceInKM, offerCode } = deliveryPackage
+    const { weightInKG, distanceInKM, offerCode, id } = deliveryPackage
     const delivertCost = this.getDeliveryCost({
       weightInKG,
       distanceInKM
@@ -85,7 +94,7 @@ class Delivery {
     let discountAmount = 0
     let offerCodeApplied = false
 
-    const coupon = this.#couponService.getCoupon(offerCode)
+    const coupon = this.#couponsRepo.getCoupon(offerCode)
 
     if (!coupon)
       return deliveryPackage.setCostDetails({
@@ -146,6 +155,15 @@ class Delivery {
       offerCodeApplied,
       offerStatus: COUPON_FAILED
     })
+  }
+
+  /**
+   *
+   * @param {[DeliveryPackage]} deliveryPackages
+   * @returns {[DeliveryPackage]}
+   */
+  getDeliveryPackagesWithCostAndTime (deliveryPackages) {
+    return deliveryPackages.map(d => this.getDeliveryPackageWithDeliveryCost(d))
   }
 }
 

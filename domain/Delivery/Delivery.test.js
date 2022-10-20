@@ -1,7 +1,7 @@
 const PercentageCoupon = require('../../entities/Coupon/PercentageCoupon/PercentageCoupon')
 const DistanceOfferCriteria = require('../../entities/OfferCriteria/OfferRangeCriteria/DistanceOfferCriteria/DistanceOfferCriteria')
 const WeightOfferCriteria = require('../../entities/OfferCriteria/OfferRangeCriteria/WeightOfferCriteria/WeightOfferCriteria')
-const CouponsService = require('../../repos/CouponsRepo/CouponsRepo')
+const CouponsRepo = require('../../repos/CouponsRepo/CouponsRepo')
 const Delivery = require('./Delivery')
 const {
   INVALID_COUPON,
@@ -10,7 +10,7 @@ const {
 const DeliveryPackage = require('../../entities/DeliveryPackage/DeliveryPackage')
 
 describe('Delivery', () => {
-  let couponService
+  let couponsRepo
 
   beforeEach(() => {
     const distanceOfferCriteria = new DistanceOfferCriteria({ upperBound: 200 })
@@ -23,15 +23,15 @@ describe('Delivery', () => {
       offerCode: 'OFR001',
       offerCriterias: [distanceOfferCriteria, weightOfferCriteria]
     })
-    couponService = new CouponsService()
-    couponService.addCoupon(percentageCoupon)
+    couponsRepo = new CouponsRepo()
+    couponsRepo.addCoupon(percentageCoupon)
   })
 
   describe('Get delivery cost', () => {
     test('get delivery cost', () => {
       const delivery = new Delivery({
         baseDeliveryCost: 100,
-        couponService,
+        couponsRepo,
         amountFor1Km: 5,
         amountFor1Kg: 10
       })
@@ -49,7 +49,7 @@ describe('Delivery', () => {
     test('Get delivery cost for in-valid coupon', () => {
       const delivery = new Delivery({
         baseDeliveryCost: 100,
-        couponService,
+        couponsRepo,
         amountFor1Km: 5,
         amountFor1Kg: 10
       })
@@ -61,7 +61,7 @@ describe('Delivery', () => {
         discountAmount,
         delivertCost,
         offerStatus
-      } = delivery.getDeliveryCostWithCoupon(
+      } = delivery.getDeliveryPackageWithDeliveryCost(
         new DeliveryPackage({
           weightInKG: 10,
           distanceInKM: 10,
@@ -76,7 +76,7 @@ describe('Delivery', () => {
     test('Get delivery cost when distance not in range for the coupon code', () => {
       const delivery = new Delivery({
         baseDeliveryCost: 100,
-        couponService,
+        couponsRepo,
         amountFor1Km: 5,
         amountFor1Kg: 10
       })
@@ -88,7 +88,7 @@ describe('Delivery', () => {
         discountAmount,
         delivertCost,
         offerStatus
-      } = delivery.getDeliveryCostWithCoupon(
+      } = delivery.getDeliveryPackageWithDeliveryCost(
         new DeliveryPackage({
           weightInKG: 10,
           distanceInKM: 201,
@@ -101,4 +101,5 @@ describe('Delivery', () => {
       expect(offerStatus).toBe(expectedMsg)
     })
   })
+  describe('Get cost and time for delivery packages', () => {})
 })

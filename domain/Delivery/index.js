@@ -9,4 +9,4 @@ const delivery = new Delivery({ couponsRepo })
 delivery.amountFor1Kg = DEFAULT_AMOUNT_FOR_1_KG
 delivery.amountFor1Km = DEFAULT_AMOUNT_FOR_1_KM
 
-export default delivery
+module.exports = delivery
