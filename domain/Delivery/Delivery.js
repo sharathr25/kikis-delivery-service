@@ -35,6 +35,27 @@ class Delivery {
     this.#amountFor1Kg = amountFor1Kg
   }
 
+  /**
+   * @param {number} baseDeliveryCost
+   */
+  set baseDeliveryCost (baseDeliveryCost) {
+    this.#baseDeliveryCost = baseDeliveryCost
+  }
+
+  /**
+   * @param {number} amountFor1Kg
+   */
+  set amountFor1Kg (amountFor1Kg) {
+    this.#amountFor1Kg = amountFor1Kg
+  }
+
+  /**
+   * @param {number} amountFor1Km
+   */
+  set amountFor1Km (amountFor1Km) {
+    this.#amountFor1Km = amountFor1Km
+  }
+
   getDeliveryCost ({ packageTotalWeight, distanceToDestination }) {
     return (
       this.#baseDeliveryCost +
