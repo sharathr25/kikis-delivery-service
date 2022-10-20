@@ -9,6 +9,7 @@ const {
 const DistanceOfferCriteria = require('../../entities/OfferCriteria/OfferRangeCriteria/DistanceOfferCriteria/DistanceOfferCriteria')
 const WeightOfferCriteria = require('../../entities/OfferCriteria/OfferRangeCriteria/WeightOfferCriteria/WeightOfferCriteria')
 const PercentageCoupon = require('../../entities/Coupon/PercentageCoupon/PercentageCoupon')
+const DeliveryPackage = require('../../entities/DeliveryPackage/DeliveryPackage')
 
 class Delivery {
   #baseDeliveryCost
@@ -56,11 +57,11 @@ class Delivery {
     this.#amountFor1Km = amountFor1Km
   }
 
-  getDeliveryCost ({ packageTotalWeight, distanceToDestination }) {
+  getDeliveryCost ({ weightInKG, distanceInKM }) {
     return (
       this.#baseDeliveryCost +
-      packageTotalWeight * this.#amountFor1Kg +
-      distanceToDestination * this.#amountFor1Km
+      weightInKG * this.#amountFor1Kg +
+      distanceInKM * this.#amountFor1Km
     )
   }
 
@@ -69,38 +70,59 @@ class Delivery {
     return value >= (lowerBound | -Infinity) && value <= (upperBound | Infinity)
   }
 
-  getDeliveryCostWithCoupon ({
-    packageTotalWeight,
-    distanceToDestination,
-    couponCode
-  }) {
+  /**
+   *
+   * @param {DeliveryPackage} deliveryPackage0
+   * @returns
+   */
+  getDeliveryCostWithCoupon (deliveryPackage0) {
+    const deliveryPackage = DeliveryPackage.clone(deliveryPackage0)
+    const { weightInKG, distanceInKM, offerCode } = deliveryPackage
     const delivertCost = this.getDeliveryCost({
-      packageTotalWeight,
-      distanceToDestination
+      weightInKG,
+      distanceInKM
     })
+    let discountAmount = 0
+    let offerCodeApplied = false
 
-    const coupon = this.#couponService.getCoupon(couponCode)
+    const coupon = this.#couponService.getCoupon(offerCode)
 
-    if (!coupon) return { delivertCost, discountAmount: 0, msg: INVALID_COUPON }
+    if (!coupon)
+      return deliveryPackage.setCostDetails({
+        discountAmount,
+        delivertCost,
+        offerCodeApplied,
+        offerStatus: INVALID_COUPON
+      })
 
     for (const criteria of coupon.offerCriterias) {
       if (criteria instanceof DistanceOfferCriteria) {
         if (
           !this.isInValidRange({
-            value: distanceToDestination,
+            value: distanceInKM,
             range: criteria
           })
         ) {
-          return { delivertCost, discountAmount: 0, msg: DISTANCE_NOT_IN_RANGE }
+          return deliveryPackage.setCostDetails({
+            discountAmount,
+            delivertCost,
+            offerCodeApplied,
+            offerStatus: DISTANCE_NOT_IN_RANGE
+          })
         }
       } else if (criteria instanceof WeightOfferCriteria) {
         if (
           !this.isInValidRange({
-            value: packageTotalWeight,
+            value: weightInKG,
             range: criteria
           })
         ) {
-          return { delivertCost, discountAmount: 0, msg: WEIGHT_NOT_IN_RANGE }
+          return deliveryPackage.setCostDetails({
+            discountAmount: 0,
+            delivertCost,
+            offerCodeApplied,
+            offerStatus: WEIGHT_NOT_IN_RANGE
+          })
         }
       }
     }
@@ -110,14 +132,20 @@ class Delivery {
       const discount = (delivertCost * percentage) / 100
       const delivertCostWithDiscount = delivertCost - discount
 
-      return {
-        delivertCost: delivertCostWithDiscount,
-        discount,
-        msg: COUPON_APPLIED
-      }
+      return deliveryPackage.setCostDetails({
+        discountAmount: delivertCostWithDiscount,
+        delivertCost,
+        offerCodeApplied: true,
+        offerStatus: COUPON_APPLIED
+      })
     }
 
-    return { delivertCost, discountAmount: 0, msg: COUPON_FAILED }
+    return deliveryPackage.setCostDetails({
+      discountAmount,
+      delivertCost,
+      offerCodeApplied,
+      offerStatus: COUPON_FAILED
+    })
   }
 }
 

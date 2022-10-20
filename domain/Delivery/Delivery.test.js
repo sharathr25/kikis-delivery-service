@@ -7,6 +7,7 @@ const {
   INVALID_COUPON,
   DISTANCE_NOT_IN_RANGE
 } = require('../../constants/messages')
+const DeliveryPackage = require('../../entities/DeliveryPackage/DeliveryPackage')
 
 describe('Delivery', () => {
   let couponService
@@ -37,8 +38,8 @@ describe('Delivery', () => {
       const expectedDeliveryCost = 250
 
       const actualDeliveryCost = delivery.getDeliveryCost({
-        packageTotalWeight: 10,
-        distanceToDestination: 10
+        weightInKG: 10,
+        distanceInKM: 10
       })
 
       expect(actualDeliveryCost).toBe(expectedDeliveryCost)
@@ -59,16 +60,18 @@ describe('Delivery', () => {
       const {
         discountAmount,
         delivertCost,
-        msg
-      } = delivery.getDeliveryCostWithCoupon({
-        packageTotalWeight: 10,
-        distanceToDestination: 10,
-        couponCode: '111GET'
-      })
+        offerStatus
+      } = delivery.getDeliveryCostWithCoupon(
+        new DeliveryPackage({
+          weightInKG: 10,
+          distanceInKM: 10,
+          offerCode: '111GET'
+        })
+      )
 
       expect(delivertCost).toBe(expectedDeliveryCost)
       expect(discountAmount).toBe(expectedDiscountAmount)
-      expect(msg).toBe(expectedMsg)
+      expect(offerStatus).toBe(expectedMsg)
     })
     test('Get delivery cost when distance not in range for the coupon code', () => {
       const delivery = new Delivery({
@@ -84,16 +87,18 @@ describe('Delivery', () => {
       const {
         discountAmount,
         delivertCost,
-        msg
-      } = delivery.getDeliveryCostWithCoupon({
-        packageTotalWeight: 10,
-        distanceToDestination: 201,
-        couponCode: 'OFR001'
-      })
+        offerStatus
+      } = delivery.getDeliveryCostWithCoupon(
+        new DeliveryPackage({
+          weightInKG: 10,
+          distanceInKM: 201,
+          offerCode: 'OFR001'
+        })
+      )
 
       expect(delivertCost).toBe(expectedDeliveryCost)
       expect(discountAmount).toBe(expectedDiscountAmount)
-      expect(msg).toBe(expectedMsg)
+      expect(offerStatus).toBe(expectedMsg)
     })
   })
 })

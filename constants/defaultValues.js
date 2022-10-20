@@ -1,0 +1,7 @@
+const DEFAULT_AMOUNT_FOR_1_KM = 5
+const DEFAULT_AMOUNT_FOR_1_KG = 10
+
+module.exports = {
+  DEFAULT_AMOUNT_FOR_1_KG,
+  DEFAULT_AMOUNT_FOR_1_KM
+}
