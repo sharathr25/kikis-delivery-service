@@ -53,11 +53,11 @@ const main = async () => {
     delivery.maxCarriableWeight = maxCarriableWeight
 
     const deliveryPackages = createPkgs(pkgsStrs)
-    const deliveryPackagesWithOffers = delivery.getDeliveryPackagesWithCostAndTime(
+    const deliveryPackagesWithCostAndTime = delivery.getDeliveryPackagesWithCostAndTime(
       deliveryPackages
     )
 
-    for (const deliveryPackage of deliveryPackagesWithOffers) {
+    for (const deliveryPackage of deliveryPackagesWithCostAndTime) {
       console.log(
         deliveryPackage.id,
         deliveryPackage.discountAmount,
