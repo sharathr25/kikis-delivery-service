@@ -3,8 +3,8 @@
 command line application to calculate the **estimated delivery time** for every package by **maximizing no. of packages in every shipment.**
 
 ### Requirements
-Node 8
-Git
+* Node 8
+* Git
 
 ### Setup
 install dependecies by running the command `npm i`
