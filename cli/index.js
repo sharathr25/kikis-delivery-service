@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const delivery = require('../domain/Delivery')
 const DeliveryPackage = require('../entities/DeliveryPackage/DeliveryPackage')
 
@@ -6,8 +8,12 @@ const readline = require('readline').createInterface({
   output: process.stdout
 })
 
-const takeInput = q =>
-  new Promise(resolve => readline.question(q || '', resolve))
+const takeInput = (q = '') =>
+  new Promise(resolve => {
+    readline.question(q, data => {
+      resolve(data)
+    })
+  })
 
 /**
  *
@@ -43,10 +49,13 @@ const main = async () => {
     }
 
     // take no of vehicles, max speed, max cariable weight
-    // input = await takeInput('no_of_vehicles max_speed max_carriable_weight')
-    // const [noOfVehicles, maxSpeed, maxCarriableWeight] = input
-    //   .split(' ')
-    //   .map(parseInt)
+    input = await takeInput('no_of_vehicles max_speed max_carriable_weight')
+    const [noOfVehicles, maxSpeed, maxCarriableWeight] = input
+      .split(' ')
+      .map(i => parseInt(i))
+    delivery.noOfVehicles = noOfVehicles
+    delivery.maxSpeed = maxSpeed
+    delivery.maxCarriableWeight = maxCarriableWeight
 
     const deliveryPackages = createPkgs(pkgsStrs)
     const deliveryPackagesWithOffers = delivery.getDeliveryPackagesWithCostAndTime(
@@ -57,10 +66,12 @@ const main = async () => {
       console.log(
         deliveryPackage.id,
         deliveryPackage.discountAmount,
-        deliveryPackage.delivertCost
+        deliveryPackage.deliveryCost,
+        deliveryPackage.deliveryTime
       )
     }
 
+    readline.close()
     process.exit()
   } catch (error) {
     console.error(error, 'something went wrong while processing the input')
