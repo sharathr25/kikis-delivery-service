@@ -10,7 +10,6 @@ const takeInput = (q = '') =>
   new Promise(resolve => {
     readline.question(q, data => {
       resolve(data)
-      readline.close()
     })
   })
 
