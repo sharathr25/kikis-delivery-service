@@ -11,6 +11,7 @@ install dependecies by running the command `npm i`
 
 ### Tests
 Run tests by runnning the command `npm test`
+Get test coverage by running th commane `npm run test-coverage`
 
 ### Run the project
 Run the project by running the command `npm start`
