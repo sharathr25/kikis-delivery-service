@@ -1,4 +1,4 @@
-const Comparator = require('./Comparator')
+const Comparator = require('../Comparator')
 
 class Heap {
   /**

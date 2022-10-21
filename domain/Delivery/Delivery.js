@@ -11,7 +11,7 @@ const PercentageCoupon = require('../../entities/Coupon/PercentageCoupon/Percent
 const DeliveryPackage = require('../../entities/DeliveryPackage/DeliveryPackage')
 const VehiclesRepo = require('../../repos/VehiclesRepo/VehiclesRepo')
 const Vehicle = require('../../entities/Vehicle/Vehicle')
-const Heap = require('../../utils/Heap')
+const Heap = require('../../utils/Heap/Heap')
 const { toFixed2 } = require('../../utils')
 
 class Delivery {

@@ -9,8 +9,8 @@ class Comparator {
 
   /**
    *
-   * @param {Number} a
-   * @param {Number} b
+   * @param {number} a
+   * @param {number} b
    * @returns {(-1|0|1)}
    */
   static defaultCompareFunction (a, b) {
@@ -20,9 +20,9 @@ class Comparator {
 
   /**
    *
-   * @param {Number} a
-   * @param {Number} b
-   * @returns {Boolean}
+   * @param {number} a
+   * @param {number} b
+   * @returns {boolean}
    */
   equals (a, b) {
     return this.compare(a, b) === 0
@@ -30,9 +30,9 @@ class Comparator {
 
   /**
    *
-   * @param {Number} a
-   * @param {Number} b
-   * @returns {Boolean}
+   * @param {number} a
+   * @param {number} b
+   * @returns {boolean}
    */
   lessThan (a, b) {
     return this.compare(a, b) < 0
@@ -40,9 +40,9 @@ class Comparator {
 
   /**
    *
-   * @param {Number} a
-   * @param {Number} b
-   * @returns {Boolean}
+   * @param {number} a
+   * @param {number} b
+   * @returns {boolean}
    */
   greaterThan (a, b) {
     return this.compare(a, b) > 0
@@ -50,9 +50,9 @@ class Comparator {
 
   /**
    *
-   * @param {Number} a
-   * @param {Number} b
-   * @returns {Boolean}
+   * @param {number} a
+   * @param {number} b
+   * @returns {boolean}
    */
   lessThanOrEqual (a, b) {
     return this.equals(a, b) || this.lessThan(a, b)
@@ -60,9 +60,9 @@ class Comparator {
 
   /**
    *
-   * @param {Number} a
-   * @param {Number} b
-   * @returns {Boolean}
+   * @param {number} a
+   * @param {number} b
+   * @returns {boolean}
    */
   greaterThanOrEqual (a, b) {
     return this.equals(a, b) || this.greaterThan(a, b)
