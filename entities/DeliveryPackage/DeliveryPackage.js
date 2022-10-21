@@ -3,20 +3,31 @@ class DeliveryPackage {
   #distanceInKM
   #weightInKG
   #offerCode
-  #delivertCost
+  #deliveryCost
+  #deliveryTime
   #discountAmount
   #offerCodeApplied
   #offerStatus
 
-  constructor ({ id, distanceInKM, weightInKG, offerCode }) {
+  constructor ({
+    id,
+    distanceInKM,
+    weightInKG,
+    offerCode,
+    offerStatus = '',
+    deliveryCost = 0,
+    deliveryTime = 0,
+    discountAmount = 0
+  }) {
     this.#id = id
     this.#distanceInKM = distanceInKM
     this.#weightInKG = weightInKG
     this.#offerCode = offerCode
     this.#offerCodeApplied = false
-    this.#offerStatus = ''
-    this.#delivertCost = 0
-    this.#discountAmount = 0
+    this.#offerStatus = offerStatus
+    this.#deliveryCost = deliveryCost
+    this.#deliveryTime = deliveryTime
+    this.#discountAmount = discountAmount
   }
 
   get id () {
@@ -31,8 +42,8 @@ class DeliveryPackage {
     return this.#weightInKG
   }
 
-  get delivertCost () {
-    return this.#delivertCost
+  get deliveryCost () {
+    return this.#deliveryCost
   }
 
   get discountAmount () {
@@ -51,17 +62,28 @@ class DeliveryPackage {
     return this.#offerCodeApplied
   }
 
+  get deliveryTime () {
+    return this.#deliveryTime
+  }
+
+  set deliveryCost (deliveryCost) {
+    this.#deliveryCost = deliveryCost
+  }
+
+  set deliveryTime (deliveryTime) {
+    this.#deliveryTime = deliveryTime
+  }
+
   setCostDetails ({
-    delivertCost,
+    deliveryCost,
     discountAmount,
     offerCodeApplied,
     offerStatus
   }) {
-    this.#delivertCost = delivertCost
+    this.#deliveryCost = deliveryCost
     this.#discountAmount = discountAmount
     this.#offerCodeApplied = offerCodeApplied
     this.#offerStatus = offerStatus
-    return this
   }
 
   static clone (deliveryPackage) {
