@@ -4,6 +4,7 @@
   "description": "small distance courier service",
   "main": "index.js",
   "scripts": {
+    "start": "node cli/index.js",
     "test": "jest"
   },
   "bin": {
