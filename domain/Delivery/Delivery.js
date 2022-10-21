@@ -142,7 +142,7 @@ class Delivery {
     const coupon = this.#couponsRepo.getCoupon(offerCode)
 
     if (!coupon) {
-      deliveryPackage.setCostDetails({
+      deliveryPackage.setCostAndOfferDetails({
         discountAmount,
         deliveryCost,
         offerCodeApplied,
@@ -159,7 +159,7 @@ class Delivery {
             range: criteria
           })
         ) {
-          deliveryPackage.setCostDetails({
+          deliveryPackage.setCostAndOfferDetails({
             discountAmount,
             deliveryCost,
             offerCodeApplied,
@@ -174,7 +174,7 @@ class Delivery {
             range: criteria
           })
         ) {
-          deliveryPackage.setCostDetails({
+          deliveryPackage.setCostAndOfferDetails({
             discountAmount: 0,
             deliveryCost,
             offerCodeApplied,
@@ -190,7 +190,7 @@ class Delivery {
       const discount = Math.floor(deliveryCost * (percentage / 100))
 
       const deliveryCostWithDiscount = deliveryCost - discount
-      deliveryPackage.setCostDetails({
+      deliveryPackage.setCostAndOfferDetails({
         discountAmount: discount,
         deliveryCost: deliveryCostWithDiscount,
         offerCodeApplied: true,
@@ -241,12 +241,15 @@ class Delivery {
         count++
         i++
       } else {
-        grouped[`g${count}`] = { packages: tempPackages, totalWeight: total }
+        grouped[`GROUP_${count}`] = {
+          packages: tempPackages,
+          totalWeight: total
+        }
         total = 0
         tempPackages = []
       }
     }
-    grouped[`g${count}`] = { packages: tempPackages, totalWeight: total }
+    grouped[`GROUP_${count}`] = { packages: tempPackages, totalWeight: total }
     return grouped
   }
 
@@ -271,11 +274,11 @@ class Delivery {
   getDeliveryPackagesWithCostAndTime (deliveryPackages) {
     const packageGroups = this.getPackagesGrouped(deliveryPackages)
 
-    const vehicles = this.#vehiclesRepo.getVehicles(
-      this.#noOfVehicles,
-      this.#maxSpeed,
-      this.#maxCarriableWeight
-    )
+    const vehicles = this.#vehiclesRepo.getVehicles({
+      numberOfVehiclesRequired: this.#noOfVehicles,
+      maxSpeed: this.#maxSpeed,
+      maxCarriableWeight: this.#maxCarriableWeight
+    })
     const vehiclesPriorityQueue = this.getVehiclesPriorityQueue(vehicles)
 
     Object.values(packageGroups)

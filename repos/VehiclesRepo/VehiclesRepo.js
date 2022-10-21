@@ -3,7 +3,7 @@ const Vehicle = require('../../entities/Vehicle/Vehicle')
 class VehiclesRepo {
   constructor () {}
 
-  getVehicles (numberOfVehiclesRequired, maxSpeed, maxCarriableWeight) {
+  getVehicles ({ numberOfVehiclesRequired, maxSpeed, maxCarriableWeight }) {
     return Array(numberOfVehiclesRequired)
       .fill(null)
       .map(

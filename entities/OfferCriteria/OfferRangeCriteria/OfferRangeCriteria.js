@@ -5,7 +5,7 @@ class OfferRangeCriteria extends OfferCriteria {
   #upperBound
 
   /**
-   *
+   * Create an OfferRangeCriteria
    * @param {Object} bounds
    * @param {(number|null)} bounds.lowerBound
    * @param {(number|null)} bounds.upperBound

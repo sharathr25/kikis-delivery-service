@@ -34,7 +34,7 @@ describe('Delivery', () => {
     vehiclesRepo = new VehiclesRepo()
   })
 
-  describe('Get delivery cost', () => {
+  describe('getDeliveryCost', () => {
     test('get delivery cost', () => {
       const delivery = new Delivery({
         baseDeliveryCost: 100,
@@ -53,8 +53,8 @@ describe('Delivery', () => {
       expect(actualDeliveryCost).toBe(expectedDeliveryCost)
     })
   })
-  describe('Get delivery cost with coupon', () => {
-    test('Get delivery cost for in-valid coupon', () => {
+  describe('getDeliveryPackageWithOfferDetails', () => {
+    test('Get delivery package with offer details for invalid coupon', () => {
       const delivery = new Delivery({
         baseDeliveryCost: 100,
         couponsRepo,
@@ -83,7 +83,7 @@ describe('Delivery', () => {
       expect(discountAmount).toBe(expectedDiscountAmount)
       expect(offerStatus).toBe(expectedMsg)
     })
-    test('Get delivery cost when distance not in range for the coupon code', () => {
+    test('Get delivery package with offer details when distance not in range for the coupon code', () => {
       const delivery = new Delivery({
         baseDeliveryCost: 100,
         couponsRepo,
@@ -112,7 +112,7 @@ describe('Delivery', () => {
       expect(discountAmount).toBe(expectedDiscountAmount)
       expect(offerStatus).toBe(expectedMsg)
     })
-    test('Get delivery cost when all criterias meet', () => {
+    test('Get delivery package with offer details all criterias meet', () => {
       const delivery = new Delivery({
         baseDeliveryCost: 100,
         couponsRepo,
@@ -142,8 +142,8 @@ describe('Delivery', () => {
       expect(offerStatus).toBe(expectedMsg)
     })
   })
-  describe('Get cost and time for delivery packages', () => {
-    test('Get cost and time', () => {
+  describe('getDeliveryPackagesWithCostAndTime', () => {
+    test('Get delivery packages with cost and time', () => {
       const packages = [
         new DeliveryPackage({
           id: 'PKG1',
@@ -205,8 +205,8 @@ describe('Delivery', () => {
       expect(package5.deliveryTime).toBe(4.18)
     })
   })
-  describe('Test1', () => {
-    test('Get cost and time', () => {
+  describe('getPackagesGrouped', () => {
+    test('Get packages grouped together with combined weight less than max carriable weight', () => {
       const packages = [
         new DeliveryPackage({
           id: 'PKG1',
@@ -250,11 +250,11 @@ describe('Delivery', () => {
         maxCarriableWeight: 200
       })
       const groups = delivery.getPackagesGrouped(packages)
-      expect(groups.g1.packages[0].weightInKG).toBe(175)
-      expect(groups.g2.packages[0].weightInKG).toBe(155)
-      expect(groups.g4.packages[0].weightInKG).toBe(110)
-      expect(groups.g4.packages[1].weightInKG).toBe(75)
-      expect(groups.g5.packages[0].weightInKG).toBe(50)
+      expect(groups.GROUP_1.packages[0].weightInKG).toBe(175)
+      expect(groups.GROUP_2.packages[0].weightInKG).toBe(155)
+      expect(groups.GROUP_4.packages[0].weightInKG).toBe(110)
+      expect(groups.GROUP_4.packages[1].weightInKG).toBe(75)
+      expect(groups.GROUP_5.packages[0].weightInKG).toBe(50)
     })
   })
 })

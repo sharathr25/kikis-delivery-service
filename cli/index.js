@@ -10,6 +10,7 @@ const takeInput = (q = '') =>
   new Promise(resolve => {
     readline.question(q, data => {
       resolve(data)
+      readline.close()
     })
   })
 
@@ -32,12 +33,10 @@ const createPkgs = pkgs => {
 
 const main = async () => {
   try {
-    // take base price and total packages
     let input = await takeInput('base_delivery_cost no_of_packges: ')
     const [basePrice, totalPkgs] = input.split(' ').map(i => parseInt(i))
     delivery.baseDeliveryCost = basePrice
 
-    // take packages
     const pkgsStrs = []
     for (let i = 1; i <= totalPkgs; i++) {
       const input = await takeInput(
@@ -46,7 +45,6 @@ const main = async () => {
       pkgsStrs.push(input)
     }
 
-    // take no of vehicles, max speed, max cariable weight
     input = await takeInput('no_of_vehicles max_speed max_carriable_weight: ')
     const [noOfVehicles, maxSpeed, maxCarriableWeight] = input
       .split(' ')
@@ -69,7 +67,6 @@ const main = async () => {
       )
     }
 
-    readline.close()
     process.exit()
   } catch (error) {
     console.error(error, 'something went wrong while processing the input')

@@ -7,23 +7,26 @@ describe('CouponsService', () => {
     expect(couponsService.coupons).toEqual({})
   })
 
-  test('Should be able to add coupon', () => {
-    const couponsService = new CouponsService()
-    const coupon = new Coupon({ offerCode: 'XYZ123' })
+  describe('addCoupon', () => {
+    test('Should be able to add coupon', () => {
+      const couponsService = new CouponsService()
+      const coupon = new Coupon({ offerCode: 'XYZ123' })
 
-    couponsService.addCoupon(coupon)
+      couponsService.addCoupon(coupon)
 
-    const addedCoupon = couponsService.getCoupon('XYZ123')
-    expect(addedCoupon.offerCode).toEqual('XYZ123')
+      const addedCoupon = couponsService.getCoupon('XYZ123')
+      expect(addedCoupon.offerCode).toEqual('XYZ123')
+    })
   })
+  describe('removeCoupon', () => {
+    test('Should be able remove coupon', () => {
+      const coupon = new Coupon({ offerCode: 'XYZ123' })
+      const couponsService = new CouponsService({ XYZ123: coupon })
 
-  test('Should be able remove coupon', () => {
-    const coupon = new Coupon({ offerCode: 'XYZ123' })
-    const couponsService = new CouponsService({ XYZ123: coupon })
+      couponsService.removeCoupon('XYZ123')
 
-    couponsService.removeCoupon('XYZ123')
-
-    const removedCoupon = couponsService.getCoupon('XYZ123')
-    expect(removedCoupon).toEqual(undefined)
+      const removedCoupon = couponsService.getCoupon('XYZ123')
+      expect(removedCoupon).toEqual(undefined)
+    })
   })
 })
