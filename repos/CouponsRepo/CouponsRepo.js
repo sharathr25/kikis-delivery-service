@@ -4,7 +4,7 @@ class CouponsService {
   #coupons
 
   /**
-   *
+   * Create a coupon
    * @param {Object.<string, Coupon>} Container} coupons
    */
   constructor (coupons = {}) {
@@ -12,7 +12,7 @@ class CouponsService {
   }
 
   /**
-   *
+   * Add a coupon
    * @param {Coupon} coupon
    * @returns {CouponsService}
    */
@@ -22,7 +22,7 @@ class CouponsService {
   }
 
   /**
-   *
+   * Remove a coupon
    * @param {String} offerCode
    */
   removeCoupon (offerCode) {
@@ -30,7 +30,7 @@ class CouponsService {
   }
 
   /**
-   *
+   * Get a coupon bu offer code
    * @param {string} offerCode
    * @returns {Coupon}
    */
