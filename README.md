@@ -34,3 +34,12 @@ PKG3 0 2350 1.42
 PKG4 105 1395 0.85
 PKG5 0 2125 4.18
 ```
+#### Few key points
+* Since there is no database, I am explicitly adding coupons to coupons repo. later in case we integrate DB we can get the coupons from DB
+* All work related to creating coupons and creating dependecies are done in index files
+* After doing the dependecy injection orchestration in index files the objects are exposed and ready to use 
+* the project is devided into 3 layers
+    * cli(Layer 1) <-> domain(Layer 2) <-> repos(Layer 3)
+    * Layer 1 i.e cli is exposed to users to take input and to show output
+    * Layer 2 i.e domain has all the buisness logic
+    * Layer 3 i.e repos we get all the data. For example getting coupon from coupons repo
