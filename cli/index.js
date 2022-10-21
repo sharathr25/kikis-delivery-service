@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 const delivery = require('../domain/Delivery')
 const DeliveryPackage = require('../entities/DeliveryPackage/DeliveryPackage')
 
@@ -49,7 +47,7 @@ const main = async () => {
     }
 
     // take no of vehicles, max speed, max cariable weight
-    input = await takeInput('no_of_vehicles max_speed max_carriable_weight')
+    input = await takeInput('no_of_vehicles max_speed max_carriable_weight: ')
     const [noOfVehicles, maxSpeed, maxCarriableWeight] = input
       .split(' ')
       .map(i => parseInt(i))
