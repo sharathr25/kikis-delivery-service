@@ -149,15 +149,6 @@ class DeliveryPackage {
     this.#offerCodeApplied = offerCodeApplied
     this.#offerStatus = offerStatus
   }
-
-  /**
-   * Get a copy of DeliveryPackage object
-   * @param {[DeliveryPackage]} deliveryPackage
-   * @returns {DeliveryPackage}
-   */
-  static clone (deliveryPackage) {
-    return new DeliveryPackage(deliveryPackage)
-  }
 }
 
 module.exports = DeliveryPackage
