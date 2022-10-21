@@ -6,7 +6,8 @@ const Delivery = require('./Delivery')
 const {
   INVALID_COUPON,
   DISTANCE_NOT_IN_RANGE,
-  COUPON_APPLIED
+  COUPON_APPLIED,
+  WEIGHT_NOT_IN_RANGE
 } = require('../../constants/messages')
 const DeliveryPackage = require('../../entities/DeliveryPackage/DeliveryPackage')
 const VehiclesRepo = require('../../repos/VehiclesRepo/VehiclesRepo')
@@ -104,6 +105,35 @@ describe('Delivery', () => {
           deliveryCost: 1205,
           weightInKG: 10,
           distanceInKM: 201,
+          offerCode: 'OFFR002'
+        })
+      )
+
+      expect(deliveryCost).toBe(expectedDeliveryCost)
+      expect(discountAmount).toBe(expectedDiscountAmount)
+      expect(offerStatus).toBe(expectedMsg)
+    })
+    test('Get delivery package with offer details when weight not in range for the coupon code', () => {
+      const delivery = new Delivery({
+        baseDeliveryCost: 100,
+        couponsRepo,
+        vehiclesRepo,
+        amountFor1Km: 5,
+        amountFor1Kg: 10
+      })
+      const expectedDeliveryCost = 1205
+      const expectedDiscountAmount = 0
+      const expectedMsg = WEIGHT_NOT_IN_RANGE
+
+      const {
+        discountAmount,
+        deliveryCost,
+        offerStatus
+      } = delivery.getDeliveryPackageWithOfferDetails(
+        new DeliveryPackage({
+          deliveryCost: 1205,
+          weightInKG: 10,
+          distanceInKM: 150,
           offerCode: 'OFFR002'
         })
       )
