@@ -277,7 +277,7 @@ class Delivery {
    * @returns {[DeliveryPackage]}
    */
   getDeliveryPackagesWithCostAndTime (deliveryPackages) {
-    const packageGroups = this.getPackagesGrouped(deliveryPackages)
+    const packageGroupsHeap = this.getPackagesGrouped(deliveryPackages)
 
     const vehicles = this.#vehiclesRepo.getVehicles({
       numberOfVehiclesRequired: this.#noOfVehicles,
@@ -286,10 +286,10 @@ class Delivery {
     })
     const vehiclesPriorityQueue = this.getVehiclesPriorityQueue(vehicles)
 
-    while (!packageGroups.isEmpty()) {
+    while (!packageGroupsHeap.isEmpty()) {
       let maxTime = -Infinity
       const vehicle = vehiclesPriorityQueue.remove()
-      const packageGroup = packageGroups.remove()
+      const packageGroup = packageGroupsHeap.remove()
       const packages = packageGroup.packages
       for (let package0 of packages) {
         package0 = this.getDeliveryPackageWithDeliveryCost(package0)
