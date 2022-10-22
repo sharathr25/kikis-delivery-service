@@ -5,6 +5,7 @@ const PercentageCoupon = require('../../entities/Coupon/PercentageCoupon/Percent
 const DeliveryPackage = require('../../entities/DeliveryPackage/DeliveryPackage')
 const VehiclesRepo = require('../../repos/VehiclesRepo/VehiclesRepo')
 const Vehicle = require('../../entities/Vehicle/Vehicle')
+const DeliveryPackageGroup = require('../../entities/DeliveryPackageGroup/DeliveryPackageGroup')
 const Heap = require('../../utils/Heap/Heap')
 const { toFixed2 } = require('../../utils')
 const {
@@ -218,16 +219,13 @@ class Delivery {
   /**
    *
    * @param {[DeliveryPackage]} pacakges
-   * @typedef {Object} DeliveryPackageGroup
-   * @property {[DeliveryPackage]} packages
-   * @property {number} totalWeight
-   * @returns {DeliveryPackageGroup}
+   * @returns {Heap<DeliveryPackageGroup>}
    */
   getPackagesGrouped (packages) {
     let i = 0
     let count = 0
     let total = 0
-    const grouped = {}
+    const grouped = new Heap((a, b) => a.totalWeight - b.totalWeight)
     let tempPackages = []
     const pacakgesSorted = [...packages].sort(
       (a, b) => b.weightInKG - a.weightInKG
@@ -235,21 +233,28 @@ class Delivery {
     while (count <= pacakgesSorted.length && pacakgesSorted[i]) {
       const pacakge0 = pacakgesSorted[i]
       const weightInKG = pacakge0.weightInKG
-      if (total + weightInKG < this.#maxCarriableWeight) {
+      if (total + weightInKG <= this.#maxCarriableWeight) {
         total += weightInKG
         tempPackages.push(pacakge0)
         count++
         i++
       } else {
-        grouped[`GROUP_${count}`] = {
-          packages: tempPackages,
-          totalWeight: total
-        }
+        grouped.insert(
+          new DeliveryPackageGroup({
+            packages: tempPackages,
+            totalWeight: total
+          })
+        )
         total = 0
         tempPackages = []
       }
     }
-    grouped[`GROUP_${count}`] = { packages: tempPackages, totalWeight: total }
+    grouped.insert(
+      new DeliveryPackageGroup({
+        packages: tempPackages,
+        totalWeight: total
+      })
+    )
     return grouped
   }
 
@@ -281,22 +286,22 @@ class Delivery {
     })
     const vehiclesPriorityQueue = this.getVehiclesPriorityQueue(vehicles)
 
-    Object.values(packageGroups)
-      .sort((a, b) => b.totalWeight - a.totalWeight)
-      .forEach(({ packages }) => {
-        const vehicle = vehiclesPriorityQueue.remove()
-        let maxTime = -Infinity
-        packages.forEach(p => {
-          let package0 = p
-          package0 = this.getDeliveryPackageWithDeliveryCost(package0)
-          package0 = this.getDeliveryPackageWithOfferDetails(package0)
-          const time = toFixed2(package0.distanceInKM / vehicle.maxSpeed)
-          maxTime = Math.max(time, maxTime)
-          package0.deliveryTime = toFixed2(vehicle.availableAt + time)
-        })
-        vehicle.availableAt += maxTime * 2
-        vehiclesPriorityQueue.insert(vehicle)
-      })
+    while (!packageGroups.isEmpty()) {
+      let maxTime = -Infinity
+      const vehicle = vehiclesPriorityQueue.remove()
+      const packageGroup = packageGroups.remove()
+      const packages = packageGroup.packages
+      for (let package0 of packages) {
+        package0 = this.getDeliveryPackageWithDeliveryCost(package0)
+        package0 = this.getDeliveryPackageWithOfferDetails(package0)
+        const time = toFixed2(package0.distanceInKM / vehicle.maxSpeed)
+        maxTime = Math.max(time, maxTime)
+        package0.deliveryTime = toFixed2(vehicle.availableAt + time)
+      }
+      vehicle.availableAt += maxTime * 2
+      vehiclesPriorityQueue.insert(vehicle)
+    }
+
     return deliveryPackages
   }
 }

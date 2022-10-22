@@ -236,7 +236,7 @@ describe('Delivery', () => {
     })
   })
   describe('getPackagesGrouped', () => {
-    test('Get packages grouped together with combined weight less than max carriable weight', () => {
+    test('Get packages in a heap together with combined weight less than max carriable weight', () => {
       const packages = [
         new DeliveryPackage({
           id: 'PKG1',
@@ -280,11 +280,15 @@ describe('Delivery', () => {
         maxCarriableWeight: 200
       })
       const groups = delivery.getPackagesGrouped(packages)
-      expect(groups.GROUP_1.packages[0].weightInKG).toBe(175)
-      expect(groups.GROUP_2.packages[0].weightInKG).toBe(155)
-      expect(groups.GROUP_4.packages[0].weightInKG).toBe(110)
-      expect(groups.GROUP_4.packages[1].weightInKG).toBe(75)
-      expect(groups.GROUP_5.packages[0].weightInKG).toBe(50)
+      const group1 = groups.remove()
+      const group2 = groups.remove()
+      const group3 = groups.remove()
+      const group4 = groups.remove()
+      expect(group1.packages[0].weightInKG).toBe(110)
+      expect(group1.packages[1].weightInKG).toBe(75)
+      expect(group2.packages[0].weightInKG).toBe(175)
+      expect(group3.packages[0].weightInKG).toBe(155)
+      expect(group4.packages[0].weightInKG).toBe(50)
     })
   })
 })
