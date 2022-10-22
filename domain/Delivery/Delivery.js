@@ -221,41 +221,40 @@ class Delivery {
    * @param {[DeliveryPackage]} pacakges
    * @returns {Heap<DeliveryPackageGroup>}
    */
-  getPackagesGrouped (packages) {
-    let i = 0
-    let count = 0
-    let total = 0
-    const grouped = new Heap((a, b) => a.totalWeight - b.totalWeight)
-    let tempPackages = []
+  getDeliveryPackageGroups (packages) {
+    const deliveryPackageGroups = new Heap(
+      (a, b) => a.totalWeight - b.totalWeight
+    )
     const pacakgesSorted = [...packages].sort(
       (a, b) => b.weightInKG - a.weightInKG
     )
-    while (count <= pacakgesSorted.length && pacakgesSorted[i]) {
-      const pacakge0 = pacakgesSorted[i]
+    let total = 0
+    let tempPackages = []
+    for (const pacakge0 of pacakgesSorted) {
       const weightInKG = pacakge0.weightInKG
       if (total + weightInKG <= this.#maxCarriableWeight) {
         total += weightInKG
         tempPackages.push(pacakge0)
-        count++
-        i++
       } else {
-        grouped.insert(
+        deliveryPackageGroups.insert(
           new DeliveryPackageGroup({
             packages: tempPackages,
             totalWeight: total
           })
         )
-        total = 0
-        tempPackages = []
+        total = weightInKG
+        tempPackages = [pacakge0]
       }
     }
-    grouped.insert(
-      new DeliveryPackageGroup({
-        packages: tempPackages,
-        totalWeight: total
-      })
-    )
-    return grouped
+    if (tempPackages.length) {
+      deliveryPackageGroups.insert(
+        new DeliveryPackageGroup({
+          packages: tempPackages,
+          totalWeight: total
+        })
+      )
+    }
+    return deliveryPackageGroups
   }
 
   /**
@@ -277,7 +276,7 @@ class Delivery {
    * @returns {[DeliveryPackage]}
    */
   getDeliveryPackagesWithCostAndTime (deliveryPackages) {
-    const packageGroupsHeap = this.getPackagesGrouped(deliveryPackages)
+    const packageGroupsHeap = this.getDeliveryPackageGroups(deliveryPackages)
 
     const vehicles = this.#vehiclesRepo.getVehicles({
       numberOfVehiclesRequired: this.#noOfVehicles,

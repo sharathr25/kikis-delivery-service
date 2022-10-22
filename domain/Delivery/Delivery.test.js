@@ -235,7 +235,7 @@ describe('Delivery', () => {
       expect(package5.deliveryTime).toBe(4.18)
     })
   })
-  describe('getPackagesGrouped', () => {
+  describe('getDeliveryPackageGroups', () => {
     test('Get packages in a heap together with combined weight less than max carriable weight', () => {
       const packages = [
         new DeliveryPackage({
@@ -279,7 +279,7 @@ describe('Delivery', () => {
         maxSpeed: 70,
         maxCarriableWeight: 200
       })
-      const groups = delivery.getPackagesGrouped(packages)
+      const groups = delivery.getDeliveryPackageGroups(packages)
       const group1 = groups.remove()
       const group2 = groups.remove()
       const group3 = groups.remove()
