@@ -261,7 +261,7 @@ class Delivery {
   /**
    *
    * @param {[Vehicle]} vehicles
-   * @returns {Heap}
+   * @returns {Heap<Vehicle>}
    */
   getVehiclesPriorityQueue (vehicles) {
     const vehiclesHeap = new Heap((a, b) => b.availableAt - a.availableAt)
