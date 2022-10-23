@@ -7,6 +7,7 @@ const VehiclesRepo = require('../../repos/VehiclesRepo/VehiclesRepo')
 const Vehicle = require('../../entities/Vehicle/Vehicle')
 const DeliveryPackageGroup = require('../../entities/DeliveryPackageGroup/DeliveryPackageGroup')
 const Heap = require('../../utils/Heap/Heap')
+const PriorityQueue = require('../../utils/PriorityQueue/PriorityQueue')
 const { toFixed2 } = require('../../utils')
 const {
   DISTANCE_NOT_IN_RANGE,
@@ -225,16 +226,18 @@ class Delivery {
     const deliveryPackageGroups = new Heap(
       (a, b) => a.totalWeight - b.totalWeight
     )
-    const pacakgesSorted = [...packages].sort(
+    const packagesSorted = [...packages].sort(
       (a, b) => b.weightInKG - a.weightInKG
     )
     let total = 0
     let tempPackages = []
-    for (const pacakge0 of pacakgesSorted) {
-      const weightInKG = pacakge0.weightInKG
-      if (total + weightInKG <= this.#maxCarriableWeight) {
+    for(let i = 0; i < packagesSorted.length;) {
+      const package0 = packagesSorted[i]
+      const weightInKG = package0.weightInKG
+      if(total + weightInKG <= this.#maxCarriableWeight) {
         total += weightInKG
-        tempPackages.push(pacakge0)
+        tempPackages.push(package0)
+        i++;
       } else {
         deliveryPackageGroups.insert(
           new DeliveryPackageGroup({
@@ -242,8 +245,8 @@ class Delivery {
             totalWeight: total
           })
         )
-        total = weightInKG
-        tempPackages = [pacakge0]
+        total = 0;
+        tempPackages = []
       }
     }
     if (tempPackages.length) {
@@ -260,14 +263,16 @@ class Delivery {
   /**
    *
    * @param {[Vehicle]} vehicles
-   * @returns {Heap<Vehicle>}
+   * @returns {PriorityQueue}
    */
-  getVehiclesPriorityQueue (vehicles) {
-    const vehiclesHeap = new Heap((a, b) => b.availableAt - a.availableAt)
+  getVehiclesQueue (vehicles) {
+    const vehiclesQueue = new PriorityQueue(
+      (a, b) => b.availableAt - a.availableAt
+    )
 
-    vehicles.forEach(v => vehiclesHeap.insert(v))
+    vehicles.forEach(v => vehiclesQueue.enqueue(v))
 
-    return vehiclesHeap
+    return vehiclesQueue
   }
 
   /**
@@ -283,11 +288,11 @@ class Delivery {
       maxSpeed: this.#maxSpeed,
       maxCarriableWeight: this.#maxCarriableWeight
     })
-    const vehiclesPriorityQueue = this.getVehiclesPriorityQueue(vehicles)
+    const vehiclesQueue = this.getVehiclesQueue(vehicles)
 
     while (!packageGroupsHeap.isEmpty()) {
       let maxTime = -Infinity
-      const vehicle = vehiclesPriorityQueue.remove()
+      const vehicle = vehiclesQueue.dequeue()
       const packageGroup = packageGroupsHeap.remove()
       const packages = packageGroup.packages
       for (let package0 of packages) {
@@ -298,7 +303,7 @@ class Delivery {
         package0.deliveryTime = toFixed2(vehicle.availableAt + time)
       }
       vehicle.availableAt += maxTime * 2
-      vehiclesPriorityQueue.insert(vehicle)
+      vehiclesQueue.enqueue(vehicle)
     }
 
     return deliveryPackages
